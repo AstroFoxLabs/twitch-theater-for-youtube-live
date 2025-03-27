@@ -1,59 +1,68 @@
 init();
 
 function init() {
-    initListeners();
-
+    // Check if short
     const video = document.querySelector('video');
     video.addEventListener('loadeddata', function(event) {
         if (isShortVideo(event.target)) {
             addShortVideoClass();
         }
     });
+
+    addThemeToTheaterButton();
+    addDisableThemeToFullscreenButton();
+
+    // Check on reload, if theater mode is enabled
+    window.addEventListener('load', async () => {
+            if (await enableCheck()) {
+                enableTheaterTheme();
+            }
+        }
+    )
 }
 
 function enableTheaterTheme() {
-
-    if (!enableCheck()) {
-        return;
-    }
-
-    console.log('Enable Theater Theme');
-    document.querySelector('html').classList.add('youtube-twitch-theater-theme');
+    console.log('Twitch Theater For Youtube: Enable Theater Theme');
+    document.querySelector('body').classList.add('youtube-twitch-theater-theme');
 }
 
 function disableTheaterTheme() {
-    console.log('Disable Theater Theme');
-    document.querySelector('html').classList.remove('youtube-twitch-theater-theme');
+    console.log('Twitch Theater For Youtube: Disable Theater Theme');
+    document.querySelector('body').classList.remove('youtube-twitch-theater-theme');
 }
 
 function enableCheck() {
-    const chatElement = document.querySelector('ytd-live-chat-frame');
-
-    if (!chatElement) {
-        return false;
-    }
-
-    return true;
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const element = document.querySelector('ytd-watch-flexy');
+            resolve(element ? element.hasAttribute('theater') : false);
+        }, 2000);
+    });
 }
 
-function initListeners() {
+
+function addThemeToTheaterButton() {
     const theaterBtn = document.querySelector('.ytp-size-button.ytp-button');
-    const fullscreenBtn = document.querySelector('.ytp-fullscreen-button.ytp-button');
 
     if (theaterBtn) {
         theaterBtn.addEventListener('click', (event) => {
-            const ytdWatchFlexy = document.querySelector('ytd-watch-flexy');
-            setTimeout(() => {
-                if (ytdWatchFlexy.hasAttribute('theater')) {
-                    enableTheaterTheme();
-                    console.log(document.querySelector('.ytp-rounded-miniplayer-not-regular-wide-video'))
-                } else {
-                    disableTheaterTheme();
-                }
-            }, 0);
-        }
-    )}
-    
+                const ytdWatchFlexy = document.querySelector('ytd-watch-flexy');
+                setTimeout(() => {
+                    if (ytdWatchFlexy.hasAttribute('theater')) {
+                        enableTheaterTheme();
+                        console.log(document.querySelector('.ytp-rounded-miniplayer-not-regular-wide-video'))
+                    } else {
+                        disableTheaterTheme();
+                    }
+                }, 0);
+            }
+        )
+    }
+}
+
+function addDisableThemeToFullscreenButton() {
+    const fullscreenBtn = document.querySelector('.ytp-fullscreen-button.ytp-button');
+
     if (fullscreenBtn) {
         fullscreenBtn.addEventListener('click', (event) => {
             disableTheaterTheme();
@@ -62,12 +71,7 @@ function initListeners() {
 }
 
 function isShortVideo(target) {
-
-    if (target.videoWidth < target.videoHeight) {
-        return true;
-    }
-
-    return false;
+    return target.videoWidth < target.videoHeight;
 }
 
 function addShortVideoClass() {
