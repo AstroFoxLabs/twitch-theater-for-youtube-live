@@ -1,16 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Twitch Theater Mode for Youtube Live",
-  "author": "SleepyEvoli",
-  "version": "1.2",
-  "description": "Make the Theater Mode similar to Twitch.",
-  "permissions": [
-    "activeTab"
-  ],
+  "name": "Twitch Theater Layout for Youtube Live",
+  "author": "AstroFoxLabs",
+  "version": "1.3",
+  "description": "Make the Theater Mode on Youtube similar to Twitch by changing its layout",
   "content_scripts": [
     {
       "matches": [
-        "*://www.youtube.com/watch*"
+        "*://*.youtube.com/*"
       ],
       "css": [
         "theater.css"
@@ -18,7 +15,7 @@
       "js": [
         "content.js"
       ],
-      "run_at": "document_end"
+      "run_at": "document_idle"
     }
   ],
   "icons": {
@@ -27,7 +24,7 @@
     "48": "./icons/icon-64.png",
     "128": "./icons/icon-128.png"
   },
-  "minimum_chrome_version": "128",
+  "minimum_chrome_version": "120",
   "short_name": "YTTW-Theater",
   "browser_specific_settings": {
     "gecko": {

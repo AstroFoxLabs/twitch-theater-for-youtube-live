@@ -1,24 +1,27 @@
-init();
+window.addEventListener('yt-navigate-finish', () => {
+    if (theaterIsEnabled()) {
+        enableTheaterTheme();
+    }
 
-function init() {
-    // Check if short
-    const video = document.querySelector('video');
-    video.addEventListener('loadeddata', function(event) {
-        if (isShortVideo(event.target)) {
-            addShortVideoClass();
+    /**
+     * the interval is needed because YouTube continuously adds/removes the chat frame element when switching between videos
+     * even when there is no chat (I noticed when you click a stream and then switch to a video with no chat, the chat frame is still there and then gets removed)
+     */
+    setInterval(() => {
+        const chatFrameElement = document.querySelector('ytd-live-chat-frame');
+        if (chatFrameElement) {
+            addTheaterButtonListener();
+            addDisableThemeToFullscreenButton();
+        } else {
+            disableTheaterTheme();
+            removeTheaterButtonListener();
         }
-    });
+    }, 1000);
+});
 
-    addThemeToTheaterButton();
-    addDisableThemeToFullscreenButton();
-
-    // Check on reload, if theater mode is enabled
-    window.addEventListener('load', async () => {
-            if (await enableCheck()) {
-                enableTheaterTheme();
-            }
-        }
-    )
+function theaterIsEnabled() {
+    const element = document.querySelector('ytd-watch-flexy');
+    return element && element.hasAttribute('theater');
 }
 
 function enableTheaterTheme() {
@@ -31,35 +34,36 @@ function disableTheaterTheme() {
     document.querySelector('body').classList.remove('youtube-twitch-theater-theme');
 }
 
-function enableCheck() {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const element = document.querySelector('ytd-watch-flexy');
-            resolve(element ? element.hasAttribute('theater') : false);
-        }, 2000);
-    });
-}
-
-
-function addThemeToTheaterButton() {
+function addTheaterButtonListener() {
     const theaterBtn = document.querySelector('.ytp-size-button.ytp-button');
 
     if (theaterBtn) {
-        theaterBtn.addEventListener('click', (event) => {
-                const ytdWatchFlexy = document.querySelector('ytd-watch-flexy');
-                setTimeout(() => {
-                    if (ytdWatchFlexy.hasAttribute('theater')) {
-                        enableTheaterTheme();
-                        console.log(document.querySelector('.ytp-rounded-miniplayer-not-regular-wide-video'))
-                    } else {
-                        disableTheaterTheme();
-                    }
-                }, 0);
-            }
-        )
+        theaterBtn.addEventListener('click', handleTheaterButtonClick);
     }
 }
 
+function handleTheaterButtonClick() {
+    const ytdWatchFlexy = document.querySelector('ytd-watch-flexy');
+
+    // waiting a tick for the attribute to be updated
+    setTimeout(() => {
+        if (ytdWatchFlexy.hasAttribute('theater')) {
+            enableTheaterTheme();
+        } else {
+            disableTheaterTheme();
+        }
+    }, 0);
+}
+
+function removeTheaterButtonListener() {
+    const theaterBtn = document.querySelector('.ytp-size-button.ytp-button');
+
+    if (theaterBtn) {
+        theaterBtn.removeEventListener('click', handleTheaterButtonClick);
+    }
+}
+
+// Theme breaks in fullscreen mode, so disable it when entering fullscreen
 function addDisableThemeToFullscreenButton() {
     const fullscreenBtn = document.querySelector('.ytp-fullscreen-button.ytp-button');
 
@@ -68,12 +72,4 @@ function addDisableThemeToFullscreenButton() {
             disableTheaterTheme();
         });
     }
-}
-
-function isShortVideo(target) {
-    return target.videoWidth < target.videoHeight;
-}
-
-function addShortVideoClass() {
-    document.querySelector('.html5-video-container').classList.add('youtube-twitch-short-video');
 }

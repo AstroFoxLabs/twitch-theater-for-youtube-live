@@ -1,4 +1,7 @@
-This is an extension for Firefox (Worked in the past with Chrome, but I didn't check it since then) that makes your Youtube Livestreams look like the Twitch Layout in Theater mode.
+
+
+This is an extension for Firefox (Worked in the past with Chrome, but I didn't check it since then). 
+It changes the Youtube Live Player Layout to be more similar to Twitch's Theater Mode.
 
 # Firefox
 - Either use this: https://addons.mozilla.org/en-US/firefox/addon/twitch-theater-youtube-live/
