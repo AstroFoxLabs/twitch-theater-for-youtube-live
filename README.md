@@ -8,10 +8,7 @@ It changes the Youtube Live Player Layout to be more similar to Twitch's Theater
 - Or go to the debug settings and upload the Zip (The files must be directly zipped without a folder in between)
 
 ## Before
-![old](https://i.imgur.com/FAddtsv.png)
+![old](https://i.imgur.com/pEBYOQ4.png)
 
 ## After
-![new](https://i.imgur.com/eaL5d7E.png)
-
-## With Chatbox
-![chatbox](https://i.imgur.com/xo0wkhR.png)
+![new](https://i.imgur.com/gZjjxlq.png)
